@@ -6,8 +6,15 @@
         <title>King's Gambit</title>
         <link rel="stylesheet" href="/static/css/home.css" />
         <link rel="icon" href="/static/assets/siteLogo.jpeg" type="image/jpeg">
+        <link rel="stylesheet" href="app/static/css/chessboard.css">
+        <script src="app/static/js/chessboard.js"></script>
     </head>
 
     <body>
+        <div id="board" style="width: 500px"></div>
+
+        <script>
+            var board = Chessboard('board', 'start');
+        </script>
     </body>
 </html>
