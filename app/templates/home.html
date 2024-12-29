@@ -7,11 +7,20 @@
         <link rel="stylesheet" href="/static/css/home.css" />
         <link rel="icon" href="/static/assets/siteLogo.jpeg" type="image/jpeg">
     </head>
-
     <body>
         <img src="/static/assets/logo.svg" alt="Logo"/>
-        <a href="/game">
-            <button>Start a match</button>
-        </a>
+        <form action="/create-room" method="POST">
+            <input type="text" name="player_name" placeholder="Enter your name" required class="input-field">
+            <button type="submit">Create New Game</button>
+        </form>
+        
+        <div class="join-section">
+            <h3>Or Join Existing Game</h3>
+            <form action="/join-game" method="POST">
+                <input type="text" name="player_name" placeholder="Enter your name" required class="input-field">
+                <input type="text" name="room_id" placeholder="Enter room ID" required class="input-field">
+                <button type="submit">Join Game</button>
+            </form>
+        </div>
     </body>
 </html>

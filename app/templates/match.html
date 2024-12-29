@@ -1,20 +1,164 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>King's Gambit</title>
-        <link rel="stylesheet" href="/static/css/home.css" />
-        <link rel="icon" href="/static/assets/siteLogo.jpeg" type="image/jpeg">
-        <link rel="stylesheet" href="app/static/css/chessboard.css">
-        <script src="app/static/js/chessboard.js"></script>
-    </head>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>King's Gambit</title>
+    <link rel="stylesheet" href="/static/css/match.css" />
+    <link rel="stylesheet" href="/static/css/chessboard.css">
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+    <script src="/static/js/chessboard.js"></script>
+</head>
+<body>
+    <div id="gameStatus" class="status" data-waiting="{{ waiting_for_opponent }}">
+        <h2 id="statusText">
+            {% if waiting_for_opponent %}
+                Waiting for opponent to join...
+            {% else %}
+                Game in Progress
+            {% endif %}
+        </h2>
+        <p>You are playing as {{ player_color }}</p>
+        {% if opponent_name %}
+            <p>Playing against: <strong>{{ opponent_name }}</strong></p>
+        {% endif %}
+    </div>
+    
+    <div id="board" style="width: 500px"></div>
+    
+    <div id="gameInfo">
+        <p>Room ID: <strong>{{ room_id }}</strong></p>
+        <p>Your Name: <strong>{{ player_name }}</strong></p>
+        <div id="moveHistory"></div>
+    </div>
 
-    <body>
-        <div id="board" style="width: 500px"></div>
-
-        <script>
-            var board = Chessboard('board', 'start');
-        </script>
-    </body>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const socket = io('http://127.0.0.1:5000');
+            const game = new Chess();
+            const playerColor = '{{ player_color }}';
+            const moveHistory = document.getElementById('moveHistory');
+            const statusText = document.getElementById('statusText');
+    
+            const waitingForOpponent = document.getElementById('gameStatus').getAttribute('data-waiting');
+            
+            let gameActive = waitingForOpponent === 'False' ? true : false;
+    
+            function isGameActive() {
+                return gameActive;
+            }
+    
+            function updateStatus() {
+                let status = '';
+                let moveColor = game.turn() === 'b' ? 'Black' : 'White';
+    
+                if (game.in_checkmate()) {
+                    status = `Game over, ${moveColor} is in checkmate.`;
+                } else if (game.in_draw()) {
+                    status = 'Game over, drawn position';
+                } else {
+                    status = `${moveColor}'s turn`;
+                    if (game.in_check()) {
+                        status += `, ${moveColor} is in check`;
+                    }
+                }
+    
+                statusText.textContent = isGameActive() ? status : 'Waiting for opponent to join...';
+            }
+    
+            const config = {
+                draggable: true,
+                position: 'start',
+                orientation: playerColor,
+                onDragStart: onDragStart,
+                onDrop: onDrop,
+                onSnapEnd: onSnapEnd
+            };
+    
+            function onDragStart(source, piece, position, orientation) {
+                if (!isGameActive()) return false;
+                if (game.game_over()) return false;
+    
+                if ((game.turn() === 'w' && playerColor !== 'white') ||
+                    (game.turn() === 'b' && playerColor !== 'black')) {
+                    return false;
+                }
+    
+                if ((playerColor === 'white' && piece.search(/^b/) !== -1) ||
+                    (playerColor === 'black' && piece.search(/^w/) !== -1)) {
+                    return false;
+                }
+            }
+    
+            function onDrop(source, target) {
+                if (!isGameActive()) return 'snapback';
+    
+                const move = game.move({
+                    from: source,
+                    to: target,
+                    promotion: 'q'
+                });
+    
+                if (move === null) return 'snapback';
+    
+                socket.emit('move', {
+                    from: source,
+                    to: target,
+                    fen: game.fen(),
+                    move: move
+                });
+    
+                updateStatus();
+                updateMoveHistory(move);
+            }
+    
+            function onSnapEnd() {
+                board.position(game.fen());
+            }
+    
+            const board = Chessboard('board', config);
+    
+            function updateMoveHistory(move) {
+                const moveText = `${move.color === 'w' ? 'White' : 'Black'}: ${move.from}-${move.to}`;
+                const moveElement = document.createElement('p');
+                moveElement.textContent = moveText;
+                moveHistory.appendChild(moveElement);
+                moveHistory.scrollTop = moveHistory.scrollHeight;
+            }
+    
+            socket.on('connect', () => {
+                console.log('Connected to server');
+            });
+    
+            socket.on('opponent_joined', (data) => {
+                window.location.reload();
+            });
+    
+            socket.on('game_start', (data) => {
+                if (data.position !== 'start') {
+                    game.load(data.position);
+                    board.position(data.position);
+                }
+                updateStatus();
+            });
+    
+            socket.on('move_made', (data) => {
+                if (data.player !== '{{ player_name }}') {
+                    game.move({
+                        from: data.from,
+                        to: data.to,
+                        promotion: 'q'
+                    });
+    
+                    board.position(game.fen());
+                    updateStatus();
+                    updateMoveHistory(data.move);
+                }
+            });
+            updateStatus();
+        });
+    </script>    
+</body>
 </html>
