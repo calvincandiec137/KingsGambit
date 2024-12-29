@@ -8,6 +8,7 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'gugugaga'
 socketio = SocketIO(app, cors_allowed_origins="*")
 
+#data classes were suggested by claude to ensure proper working but i implemented myself
 @dataclass
 class Player:
     id: str
@@ -59,22 +60,37 @@ def join_game():
     room_id = request.form.get('room_id')
     player_name = request.form.get('player_name')
     
-    if not room_id or not player_name or room_id not in games:
-        return redirect(url_for('home'))
+    if not room_id or not player_name:
+        return "Please provide both room ID and player name", 400
+        
+    if room_id not in games:
+        return "Game room not found", 404
     
     game = games[room_id]
-    if game.black is not None:
-        return "Game is full", 400
     
+    #check rejoin
+    player_id = session.get('player_id')
+    if player_id:
+        if game.white and game.white.id == player_id:
+            return redirect(url_for('game', room_id=room_id))
+        if game.black and game.black.id == player_id:
+            return redirect(url_for('game', room_id=room_id))
+    
+    if game.black is not None:
+        return "This game is already full", 400
+    
+    #black joins
     player_id = str(uuid.uuid4())
     black_player = Player(id=player_id, name=player_name)
     game.black = black_player
     game.status = 'playing'
     
+    # Set session variables
     session['player_id'] = player_id
     session['room_id'] = room_id
     session['player_name'] = player_name
     
+    #notification
     socketio.emit('opponent_joined', {
         'black_player': player_name,
         'game_status': 'playing'
@@ -82,6 +98,7 @@ def join_game():
     
     return redirect(url_for('game', room_id=room_id))
 
+#took help of snippets provided by chatGPT since this is new concept for me.
 @app.route('/game/<room_id>')
 def game(room_id):
     if room_id not in games:
@@ -93,14 +110,15 @@ def game(room_id):
     
     game = games[room_id]
     
-    if game.white.id == player_id:
+    #color determinor
+    if game.white and game.white.id == player_id:
         player_color = 'white'
         opponent_name = game.black.name if game.black else None
     elif game.black and game.black.id == player_id:
         player_color = 'black'
         opponent_name = game.white.name
     else:
-        return redirect(url_for('home'))
+        return "You are not a player in this game", 403
     
     waiting_for_opponent = game.status == 'waiting'
     
@@ -150,6 +168,24 @@ def handle_move(data):
         'move': data['move'],
         'player': player_name
     }, room=room_id, include_self=False)
+
+@socketio.on('chat_message')
+def handle_chat_message(data):
+    room = data['room']
+    if room in games:
+        emit('chat_message', {
+            'message': data['message'],
+            'sender': data['sender']
+        }, room=room, include_self=False)
+
+
+@socketio.on('ready_for_call')
+def handle_ready_for_call(data):
+    room = data['room']
+    if room in games:
+        emit('opponent_ready_for_call', {
+            'peerId': data['peerId']
+        }, room=room, include_self=False)
 
 if __name__ == '__main__':
     socketio.run(app, debug=True)
