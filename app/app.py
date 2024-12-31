@@ -8,7 +8,7 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'gugugaga'
 socketio = SocketIO(app, cors_allowed_origins="*")
 
-#data classes were suggested by claude to ensure proper working but i implemented myself
+#data classes were suggested by claude to ensure proper working
 @dataclass
 class Player:
     id: str
@@ -25,6 +25,8 @@ class Game:
     def to_dict(self):
         return asdict(self)
 
+
+#i learned about type hints here :p
 games: Dict[str, Game] = {}
 
 @app.route('/')
@@ -37,7 +39,7 @@ def create_room():
     if not player_name:
         return redirect(url_for('home'))
     
-    room_id = str(uuid.uuid4())[:8]
+    room_id = str(uuid.uuid4())[:8] #makes sure room id is short only
     player_id = str(uuid.uuid4())
     
     white_player = Player(id=player_id, name=player_name)
@@ -85,7 +87,6 @@ def join_game():
     game.black = black_player
     game.status = 'playing'
     
-    # Set session variables
     session['player_id'] = player_id
     session['room_id'] = room_id
     session['player_name'] = player_name

@@ -33,19 +33,17 @@
                         Game in Progress
                     {% endif %}
                 </h2>
-                <p>You are playing as {{ player_color }}</p>
                 {% if opponent_name %}
                     <p>Playing against: <strong>{{ opponent_name }}</strong></p>
                 {% endif %}
             </div>
             
-            <div id="board" style="width: 600px"></div>
+            <div class="board-section" id="board" style="width: 600px"></div>
         </div>
 
         
         <div class="right-section">
             <div class="video-section">
-                <h3>Video Call</h3>
                 <div class="video-container">
                     <video id="localVideo" autoplay muted playsinline></video>
                     <video id="remoteVideo" autoplay playsinline></video>
@@ -57,7 +55,6 @@
             </div>
 
             <div class="chat-section">
-                <h3>Chat</h3>
                 <div class="chat-messages" id="chatMessages"></div>
                 <div class="chat-input-container">
                     <input type="text" class="chat-input" id="chatInput" placeholder="Type your message...">

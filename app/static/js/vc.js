@@ -13,7 +13,6 @@ const initVideo = (roomId) => {
     const videoContainer = document.querySelector('.video-container');
     const videoStatus = document.createElement('div');
     videoStatus.className = 'video-status active';
-    videoStatus.textContent = 'Click "Start Video" to begin';
     videoContainer.appendChild(videoStatus);
 
     function updateVideoStatus(message) {
