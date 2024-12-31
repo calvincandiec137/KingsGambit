@@ -1,8 +1,6 @@
 King's Gambit
-A Real-Time 1 on 1 Chess Platform
-
 Bhavesh Kukreja
 GitHub: BhaveshKukreja29
-edX: [Your edX Username]
+edX: bhaveshkukreja29
 Ulhasnagar, India
 31st December 2024

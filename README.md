@@ -5,7 +5,7 @@ A one on one chess playing platform with private rooms for two players supportin
 
 Each game room and players have a unique ID, ensuring privacy of both players. The project is able to handle dynamic links which are needed when users create a new room and want to join it.
 
-- Problems faced: During the development I faced many errors with libraries and integration. I thought it would be a breeze integrating chessboard.js and working on other features after it. It took me 2 days to figure out what I was doing wrong. I even made one line change in chessboard.js (just for the assets XD). I feel really great solving all the problems that came along the way. Figuring out data emit using socketIO took the longest and then tweaking CSS was another really hard part. Even though I used internet but still CSS turned out to be one of the things that took me time to get right. 
+- Problems faced: During the development I faced many errors with libraries and integration. I thought it would be a breeze integrating chessboard.js and working on other features after it. It took me 2 days to figure out what I was doing wrong. Keeping the moves persistent was also an issue which we solved by making objects about the player and game. I feel really great solving all the problems that came along the way. Figuring out data emit using socketIO took the longest and then tweaking CSS was another really hard part. Even though I used internet but still CSS turned out to be one of the things that took me time to get right. 
 
 I have seperated each files into their respective modules like static and templates for flask. And inside static I have further divided them into assets, css and js.
 
