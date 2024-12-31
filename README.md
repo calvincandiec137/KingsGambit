@@ -1,5 +1,6 @@
 # King-sGambit
-#### Video Demo: link putting later
+#### Video Demo: 
+https://youtu.be/iI9_71zqy08
 ## Description:
 A one on one chess playing platform with private rooms for two players supporting text based chatting and Video calling in the same place for that specific room. 
 
