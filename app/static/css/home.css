@@ -1,75 +1,87 @@
-/*wrote by me after revisiting week 8 with html css in cs50x*/
+/* Wrote by me after revisiting week 8 with HTML & CSS in CS50x */
 body {
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    background-color: #1F2937;
-    color: #F3F4F6;
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
-    padding: 16px;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #1f2937;
+  color: #f3f4f6;
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
+  padding: 16px;
 }
 
 img {
-    margin-top: 50px;
-    width: 400px;
-    height: auto;
-    margin-bottom: 24px;
+  margin-top: 50px;
+  width: 400px;
+  height: auto;
+  margin-bottom: 24px;
 }
 
 .input-field {
-    width: 230px;
-    padding: 8px 12px;
-    margin-bottom: 12px;
-    border: 2px solid #374151;
-    border-radius: 6px;
-    background-color: #374151;
-    color: #F3F4F6;
-    font-size: 14px;
-    transition: border-color 0.2s;
+  width: 230px;
+  padding: 8px 12px;
+  margin-bottom: 12px;
+  border: 2px solid #374151;
+  border-radius: 6px;
+  background-color: #374151;
+  color: #f3f4f6;
+  font-size: 14px;
+  transition: border-color 0.2s;
 }
 
 .input-field:focus {
-    outline: none;
-    border-color: #60A5FA;
+  outline: none;
+  border-color: #60a5fa;
 }
 
 button {
-    width: 260px;
-    padding: 8px 16px;
-    font-size: 14px;
-    font-weight: 600;
-    color: white;
-    background-color: #60A5FA;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background-color 0.2s, transform 0.2s;
+  width: 260px;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  color: white;
+  background-color: #60a5fa;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.2s;
+}
+
+/* Ensuring the button inside .create-btn is properly styled */
+.create-btn {
+  display: flex;
+  justify-content: center;
+  width: 100%; /* Ensure container stretches */
+}
+
+.create-btn button {
+  width: 300px !important;
+  max-width: 100%; /* Prevent overflow issues */
 }
 
 button:hover {
-    background-color: #3B82F6;
-    transform: translateY(-1px);
+  background-color: #3b82f6;
+  transform: translateY(-1px);
 }
 
 form {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 .join-section {
-    margin-top: 24px;
-    text-align: center;
-    padding: 20px;
-    background-color: #374151;
-    border-radius: 8px;
-    width: 260px;
+  margin-top: 24px;
+  text-align: center;
+  padding: 20px;
+  background-color: #374151;
+  border-radius: 8px;
+  width: 260px;
 }
 
 .join-section h3 {
-    margin: 0 0 16px 0;
-    color: #F3F4F6;
-    font-size: 16px;
+  margin: 0 0 16px 0;
+  color: #f3f4f6;
+  font-size: 16px;
 }
