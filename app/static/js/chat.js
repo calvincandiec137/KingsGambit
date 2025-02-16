@@ -1,4 +1,5 @@
 // simple chatting
+/* 
 const initChat = (roomId, playerName) => {
     const socket = io();
     const chatInput = document.getElementById('chatInput');
@@ -36,4 +37,4 @@ const initChat = (roomId, playerName) => {
     socket.on('chat_message', function(data) {
         addMessage(`${data.sender}: ${data.message}`, false);
     });
-};
+};*/

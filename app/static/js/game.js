@@ -83,7 +83,7 @@ const initGame = () => {
     };
     
     const board = Chessboard('board', config);
-    
+    /* 
     socket.on('move_made', (data) => {
         const move = game.move({
             from: data.from,
@@ -114,4 +114,5 @@ const initGame = () => {
     });
     
     updateStatus();
+    */
 };
